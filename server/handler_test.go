@@ -7,5 +7,5 @@ import (
 
 func TestGetRootDir(t *testing.T) {
 	getRootDir()
-	fmt.Println(rootDir)
+	fmt.Println(RootDir)
 }

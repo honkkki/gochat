@@ -1,15 +1,13 @@
 package server
 
 import (
-	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 )
 
-var rootDir string
+var RootDir string
 
 func RegisterHandler() {
 	getRootDir()
@@ -36,7 +34,7 @@ func getRootDir() {
 		return infer(filepath.Dir(d))
 	}
 
-	rootDir = infer(wd)
+	RootDir = infer(wd)
 }
 
 func exists(filename string) bool {
@@ -44,20 +42,4 @@ func exists(filename string) bool {
 	return err == nil || os.IsExist(err)
 }
 
-func HomeHandleFunc(w http.ResponseWriter, r *http.Request) {
-	tpl, err := template.ParseFiles(rootDir + "/template/home.html")
-	if err != nil {
-		fmt.Fprint(w, "模板解析错误！")
-		return
-	}
 
-	err = tpl.Execute(w, nil)
-	if err != nil {
-		fmt.Fprint(w, "模板执行错误！")
-		return
-	}
-}
-
-func WebSocketHandleFunc(w http.ResponseWriter, r *http.Request) {
-
-}

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/gochat/server"
+	"github.com/honkkki/gochat/server"
 	"log"
 	"net/http"
 )
