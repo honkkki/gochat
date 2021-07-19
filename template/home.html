@@ -137,8 +137,10 @@
 
                     gWS.onopen = function () {
                         // WebSocket 已连接上的回调
+                        console.log("connect to ws successful!")
                     };
 
+                    // 接受服务端消息
                     gWS.onmessage = function (evt) {
                         let data = JSON.parse(evt.data);
                         if (data.type == 4) {
@@ -172,6 +174,8 @@
                             }
                         }
 
+                        console.log(data)
+                        // push to list
                         that.addMsg2List(data);
                     };
 
@@ -203,6 +207,8 @@
 
                 this.joined = false;
             },
+
+            // 发送消息给服务端接受
             sendChatContent: function() {
                 let msg = JSON.stringify({"content": this.content});
                 gWS.send(msg);
@@ -233,7 +239,7 @@
                 xhr.open('GET', '/user_list', true)
                 xhr.onreadystatechange = function () {
                     //readyStatus == 4说明请求已经完成
-                    if(xhr.readyState == 4 && xhr.status ==200) {
+                    if(xhr.readyState === 4 && xhr.status === 200) {
                         that.users.splice(0);
                         let users = JSON.parse(xhr.responseText);
                         for (let i in users) {
@@ -243,7 +249,7 @@
                         }
                     }
                 };
-                //发送数据
+                // request data
                 xhr.send();
             },
             // 换行
@@ -269,14 +275,18 @@
             },
 
             addMsg2List: function(data) {
-                if (data.content == "") {
+                if (data.content === "") {
                     return;
                 }
 
                 that = this;
+                console.log(data.ats)
+
                 if (data.ats != null) {
                     data.ats.forEach(function(nickname) {
-                        if (nickname == '@'+that.nickname) {
+                        console.log(nickname)
+                        console.log(that.curUser.nickname)
+                        if (nickname === '@'+that.curUser.nickname) {
                             that.usertip = '有人 @ 你了';
                         }
                     })
@@ -288,6 +298,7 @@
                     this.msglist.splice(0, 40);
                 }
 
+                // 收到服务端推送的消息 push到列表
                 this.msglist.push(data);
 
                 Vue.nextTick(function() {
@@ -297,14 +308,14 @@
 
                 setTimeout(function() {
                     that.usertip = '';
-                }, 5000);
+                }, 15000);
             },
 
             // 保活
             keepAlive: function() {
                 // 表明异常退出了
-                if (gWS.readyState == WebSocket.CLOSED && this.joined) {
-                    console.log("reconnect");
+                if (gWS.readyState === WebSocket.CLOSED && this.joined) {
+                    console.log("reconnect...");
                     this.joinchat();
                 }
             },

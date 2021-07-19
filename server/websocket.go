@@ -29,7 +29,7 @@ func WebSocketHandleFunc(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := logic.NewUser(conn, "", nickname, r.RemoteAddr)
-	// 开启向用户发送消息的goroutine. user get message.
+	// 开启goroutine. user get message.
 	go user.SendMessage(r.Context())
 	user.MessageChannel<-logic.NewWelcomeMessage(user)
 
@@ -41,7 +41,7 @@ func WebSocketHandleFunc(w http.ResponseWriter, r *http.Request) {
 	logic.Broadcaster.UserEntering(user)
 	log.Println("user:", user.NickName, "joins to chatroom")
 
-	// get user send message
+	// get users message
 	err = user.ReceiveMessage(r.Context())
 
 	// user left from chatroom

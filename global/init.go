@@ -14,6 +14,7 @@ var RootDir string
 
 var once = new(sync.Once)
 
+// Init only init once
 func Init() {
 	once.Do(func() {
 		inferRootDir()
